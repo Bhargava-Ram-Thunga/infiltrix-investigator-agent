@@ -38,7 +38,7 @@ python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Requirements are strictly minimal: `pydantic>=2.0` (data contracts), `python-docx` (handbook ingestion), and `pytest` (tests). `sqlite3` is built into Python standard library.
+Requirements are strictly minimal: `pydantic>=2.0` (data contracts), `python-docx` (handbook ingestion), and `pytest` (tests). `sqlite3` is built into the Python standard library.
 
 ### Handbook Placement
 
@@ -97,18 +97,20 @@ else:
 - `related_events` is ordered newest-first; `endpoints_touched` / `session_ids_observed` are unique and sorted.
 
 ### Failure Rate
-$$\text{failure\_rate} = \frac{\text{failed\_event\_count}}{\text{related\_event\_count}}$$
+```text
+failure_rate = failed_event_count / related_event_count
+```
 
-where failed means `status_code >= 400`. When `related_event_count == 0`, `failure_rate = 0.0` (never division-by-zero).
+where "failed" means `status_code >= 400`. When `related_event_count == 0`, `failure_rate = 0.0` (never division-by-zero).
 
 ### Severity Matrix (Deterministic)
 
-Evaluated top-down ($N$ = events, $U$ = unique endpoints, $F$ = failure rate):
+Evaluated top-down ($N$ = event count, $U$ = unique endpoints, $F$ = failure rate):
 
 | Severity | Condition |
 |:---|:---|
-| `severe` | $N \ge 10$ **OR** $U \ge 5$ **OR** ($N \ge 6$ **AND** $F \ge 0.80$) |
-| `elevated` | otherwise: $N \ge 4$ **OR** $U \ge 3$ **OR** ($N \ge 3$ **AND** $F \ge 0.60$) |
+| `severe` | `N >= 10` or `U >= 5` or (`N >= 6` and `F >= 0.80`) |
+| `elevated` | otherwise: `N >= 4` or `U >= 3` or (`N >= 3` and `F >= 0.60`) |
 | `normal` | otherwise |
 
 Implemented as the pure function `compute_severity(event_count, unique_endpoints, failure_rate)` in `agent.py`. Thresholds are pinned by parametrized tests.

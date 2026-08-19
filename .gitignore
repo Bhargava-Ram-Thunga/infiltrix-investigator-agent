@@ -1,0 +1,24 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Database files
+*.db
+*.sqlite3
+
+# Developer / IDE / AI Assistant Configuration (DO NOT COMMIT TO GIT)
+.claude/
+.idea/
+.vscode/
+CLAUDE.md
+claude.md
+*.log
